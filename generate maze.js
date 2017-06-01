@@ -2,7 +2,7 @@ cnvs = document.getElementById("cnvs")
 ctx = cnvs.getContext("2d")
 
 
-mazeWidth = mazeHeight = 4;
+mazeWidth = mazeHeight = 3;
 
 var maze = []
 var visited = []
