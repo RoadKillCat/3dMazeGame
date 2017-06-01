@@ -14,104 +14,76 @@ window.addEventListener("resize", function(e){
 	startUp()
 } )
 
-
 function keyPress(event){
 	key = event.keyCode
 
 	if (key == 67) restart()				//c for restart
 	
 	
-	if (key == 88) cam.z -= cam.step		//x	fly down
-	if (key == 90) cam.z += cam.step		//z fly up
-	if (key == 87) takeStep(cam.yaw)		//w	walk forward
-	if (key == 83) takeStep(cam.yaw + 180)	//s walk backwards
-	if (key == 65) takeStep(cam.yaw - 90)	//a walk left
-	if (key == 68) takeStep(cam.yaw + 90)	//d walk right	
+	if (key == 88) cam.z -= cam.step					//x	fly down
+	if (key == 90) cam.z += cam.step					//z fly up
+	if (key == 87) takeStep(cam.yaw)					//w	walk forward
+	if (key == 83) takeStep(cam.yaw + 180)				//s walk backwards
+	if (key == 65) takeStep(cam.yaw - 90)				//a walk left
+	if (key == 68) takeStep(cam.yaw + 90)				//d walk right	
 	if (key == 69) cam.yaw   += cam.lookStep			//e	//look left
 	if (key == 81) cam.yaw   -= cam.lookStep  			//q	//look right
 	if (key == 82) cam.pitch += cam.lookStep			//r	//look up
 	if (key == 70) cam.pitch -= cam.lookStep   			//f	//look down
 	if (key == 89) cam.roll  += cam.lookStep			//y //roll left
 	if (key == 84) cam.roll  -= cam.lookStep			//t //roll right
-	if (key == 187) cam.fov += 5				//+ increase fov
-	if (key == 189) cam.fov -= 5				//- decrease fov
-	if (key == 71) wireframe = !wireframe   	//g toggle wireframe
-	if (key == 77) miniMap = !miniMap 			//m toggle minimap
+	if (key == 187) cam.fov += 5						//+ increase fov
+	if (key == 189) cam.fov -= 5						//- decrease fov
+	if (key == 71) wireframe = !wireframe   			//g toggle wireframe
+	if (key == 77) miniMap = !miniMap 					//m toggle minimap
+	if (key == 78) newMaze() 							//n new maze
 	renderWorld()
 	
 	
 }
 
 
-function startUp(){
-	
-	ctx.textBaseline = "middle"
-	ctx.fillStyle = "#c6b9cc"
-	ctx.font = "150px cambria"
-	ctx.textAlign = "center"
-	ctx.fillText("Welcome", width / 2, height / 5)
-	lines = [
-	"",
-	"",
-	"The aim is to escape the maze.",
-	"Good luck!",
-	"",
-	"Full screen (F11) is recommended",
-	"",
-	"Controls:",
-	"w: walk forward",
-	"a: walk left",
-	"s: reverse",
-	"d: walk right",
-	"q: yaw left",
-	"e: yaw right",
-	"r: pitch up",
-	"f: pitch down",
-	"+: increase fov",
-	"-: decrease fov",
-	"g: toggle wireframe",
-	"m: toggle mini map",
-	"c: begin"
-	]
-	ctx.textAlign = "left"
-	ctx.font = "25px cambria"
-	for (l = 0; l < lines.length; l ++){
-		ctx.fillText(lines[l], width / 2 - 200, height / 5 + l * 25 + 60)
-	}
-}
+console.log("the cheat keys are 'z' and 'x' for all element inspecters ;)")
+
+//maze
+mazeWidth = mazeHeight = 3;
+//map
+miniMap = true
+mapWidth = width / 5
+mapHeight = height / 5
+border = 0.6
+gap = 5
+arrowLength = 25
+dot = 5
+scale = 0.47
+
+//rendering
+wireframe = false
+blockWidth = 40
+
 
 startUp()
 
-wireframe = false
-miniMap = false
 
-function restart(){
-	playing = true
-	
-	blockWidth = 40
-	
-	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 40, step: 4, lookStep: 10}		//camera
-
-	cube = { coords: block, c: "#c6b9cc", x: 0, y: 0, z: 0, yaw: 0 }
-	
+function newMaze(){
 	objects = []
-	
-	
+	generateMaze()
 	for (var y = 0; y < mazeHeight * 2 + 1; y ++){
 		for (var x = 0; x < mazeWidth * 2 + 1; x++){
 			if (maze[y][x])	objects.push({ coords: block, c: "#c6b9cc", x: x * blockWidth , y: y * blockWidth, z : 0, yaw :0 })
 		}
 	}
+}
+	
+	
+function restart(){
+	
+	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 40, step: 4, lookStep: 10}		//camera
+	
+	newMaze()
 	
 	renderWorld()
 }
-
-function takeStep(yaw){
-	cam.x = cam.step * Math.sin(radFromDeg(yaw)) + cam.x
-	cam.y = cam.step * Math.cos(radFromDeg(yaw)) + cam.y
-}
-
-distanceBetween = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
 
 function drawPoints(canvasCoordinates){	//acctually does the drawing of the coordinates from the canvas coordinates fills in with reference to the shape index array
 	
@@ -146,7 +118,6 @@ function drawPoints(canvasCoordinates){	//acctually does the drawing of the coor
 	}	
 }
 
-
 function unifyObjectCoords(){
 	objectColours = []
 	unifiedCoords = []
@@ -172,28 +143,12 @@ function renderObjects(){				//draws the 3d objects from their coordinates and c
 	drawPoints(canvasCoordinates)
 }
 
-function mapAngletoFitCanvas(o, index){
-	return { x: width / 2 + (o.yaw * (width / cam.fov) ), y: height / 2 - (o.pitch * (width / cam.fov) ), i: index }
-}
-
-function angleFromCoord(coord){									   //takes a coordinate and returns the yaw and pitch angles from the camera
-	yaw =  degFromRad( Math.atan2(coord.x - cam.x, coord.y - cam.y) )	
-	pitch = degFromRad(Math.atan2(coord.z - cam.z, coord.y - cam.y) )
-
-	return {yaw: yaw, pitch: pitch}
-}
-
-
 function renderMiniMap(){										//renders the minimap
 	
 	if (!miniMap) return
-
+	
 	mapWidth = width / 5
 	mapHeight = height / 5
-	
-	border = 0.6
-	gap = 5
-	arrowLength = 70
 	
 	ctx.fillStyle = "black"
 	ctx.fillRect(width - gap, gap, -mapWidth + border * -2, mapHeight + border * 2)
@@ -202,11 +157,9 @@ function renderMiniMap(){										//renders the minimap
 	
 	centerX = width - border - gap - mapWidth / 2
 	centerY = border + gap + mapHeight / 2
-	scale = 0.3
+	
 	adjustPointsY = mapHeight / 3
 	adjustPointsX = mapWidth / -4
-	
-	dot = 5;
 	
 	var coordinates = unifiedCoords
 	
@@ -280,7 +233,8 @@ function renderHUD(){
 	["g", "wireframe"],
 	["m", "mini map"], 
 	["+", "incr. fov"],
-	["-", "decr. fov"]
+	["-", "decr. fov"],
+	["c", "restart"]
 	]
 	]
 	
@@ -312,9 +266,106 @@ function renderWorld(){											//draws the world from given cam perspective a
 	
 }
 
+function startUp(){
+	
+	ctx.textBaseline = "middle"
+	ctx.fillStyle = "#c6b9cc"
+	ctx.font = "150px cambria"
+	ctx.textAlign = "center"
+	ctx.fillText("Welcome", width / 2, height / 5)
+	lines = [
+	"",
+	"",
+	"The aim is to escape the maze.",
+	"Good luck!",
+	"",
+	"Full screen (F11) is recommended",
+	"",
+	"Controls:",
+	"w: walk forward",
+	"a: walk left",
+	"s: reverse",
+	"d: walk right",
+	"q: yaw left",
+	"e: yaw right",
+	"r: pitch up",
+	"f: pitch down",
+	"+: increase fov",
+	"-: decrease fov",
+	"g: toggle wireframe",
+	"m: toggle mini map",
+	"c: begin"
+	]
+	ctx.textAlign = "left"
+	ctx.font = "25px cambria"
+	for (l = 0; l < lines.length; l ++){
+		ctx.fillText(lines[l], width / 2 - 200, height / 5 + l * 25 + 60)
+	}
+}
+
+function generateMaze(){
+
+	maze = []
+	var visited = []
+	for (r = 0; r < mazeHeight * 2; r ++){
+		r1 = [true]
+		r2 = [true]
+		v = []
+		for (c = 0; c < mazeWidth * 2; c++){
+			r1.push(true,true)
+			r2.push(false,true)
+			v.push(false)
+		}
+		maze.push(r1,r2)
+		visited.push(v)
+	}
+
+	maze[0][1] = maze[mazeWidth * 2][mazeHeight * 2 - 1]= false
+
+	var x, y
+	x = y = 0
+
+	var stack = [[x,y]]
+
+	while (stack.length){
+		visited[y][x] = true
+		neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
+		notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < mazeWidth && c[1] < mazeHeight && !visited[c[1]][c[0]] ))
+		if (notVisited.length) {
+			next = notVisited[Math.floor(Math.random() * notVisited.length)];
+			maze[(next[1] + y) + 1][(next[0] + x) +1] = false
+			stack.push([x,y])
+			x = next[0]
+			y = next[1]
+		} else {
+			x = stack[stack.length -1][0]
+			y = stack[stack.length -1][1]
+			stack.pop()
+		}
+	}
+}
+
 
 
 //SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS//SHORT SPECIFIC FUNCTIONS
+
+function mapAngletoFitCanvas(o, index){
+	return { x: width / 2 + (o.yaw * (width / cam.fov) ), y: height / 2 - (o.pitch * (width / cam.fov) ), i: index }
+}
+
+function takeStep(yaw){
+	cam.x = cam.step * Math.sin(radFromDeg(yaw)) + cam.x
+	cam.y = cam.step * Math.cos(radFromDeg(yaw)) + cam.y
+}
+
+distanceBetween = (co1, co2) => Math.sqrt(Math.pow(co2.x - co1.x , 2) + Math.pow(co2.y - co1.y , 2) + Math.pow(co2.z - co1.z , 2))
+
+function angleFromCoord(coord){									   //takes a coordinate and returns the yaw and pitch angles from the camera
+	yaw =  degFromRad( Math.atan2(coord.x - cam.x, coord.y - cam.y) )	
+	pitch = degFromRad(Math.atan2(coord.z - cam.z, coord.y - cam.y) )
+
+	return {yaw: yaw, pitch: pitch}
+}
 
 function centroidFace(face){
 	avgCo = {x: 0, y: 0, z: 0}
