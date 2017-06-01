@@ -90,7 +90,7 @@ function restart(){
 	
 	blockWidth = 40
 	
-	cam = {x: 0, y: -50, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 40, step: 3, lookStep: 10}		//camera
+	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 40, step: 4, lookStep: 10}		//camera
 
 	cube = { coords: block, c: "#c6b9cc", x: 0, y: 0, z: 0, yaw: 0 }
 	
