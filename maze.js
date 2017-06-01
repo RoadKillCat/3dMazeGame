@@ -83,7 +83,7 @@ function startUp(){
 startUp()
 
 wireframe = false
-miniMap = true
+miniMap = false
 
 function restart(){
 	playing = true
