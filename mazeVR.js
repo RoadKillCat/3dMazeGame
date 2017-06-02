@@ -64,6 +64,7 @@ function keyPress(event){
 	if (key == 187) {mazeWidth++;mazeHeight++;newMaze()}			//+ increase maze size
 	if (key == 189) {mazeWidth--;mazeHeight--;newMaze()}			//- decrease maze size
 	if (key == 71) wireframe = !wireframe   			//g toggle wireframe
+	if (key == 72) crosshairs = !crosshairs   			//g toggle crosshairs
 	if (key == 77) miniMap = !miniMap 					//m toggle minimap
 	if (key == 78) newMaze() 							//n new maze
 	renderWorld()
@@ -79,17 +80,18 @@ console.log("using this, a cool thing to do is fly up (z) and then pan down (f) 
 mazeWidth = mazeHeight = 3;
 //map
 miniMap = true
-mapWidth = width / 3
+mapWidth = width / 4
 mapHeight = height / 4
 border = 0.6
-gap = 8
+gap = 25
 arrowLength = 25
 dot = 5
 
 //rendering
+crosshairs = true
 wireframe = false
 blockWidth = 40
-eyeDif = 3
+eyeDif = 2
 
 restart()
 //startUp()
@@ -195,10 +197,10 @@ function renderMiniMap(){										//renders the minimap
 	
 	if (!miniMap) return
 	
-	scale = 1.5 / mazeWidth
+	scale = 1.3 / mazeWidth
 	
-	mapWidth = width / 3
-	mapHeight = height / 3
+	mapWidth = width / 4
+	mapHeight = height / 4
 	
 	ctx.fillStyle = "black"
 	ctx.fillRect(width - gap, gap, -mapWidth + border * -2, mapHeight + border * 2)
@@ -253,7 +255,7 @@ function renderMiniMap(){										//renders the minimap
 function renderHUD(){
 	if (!miniMap) mapHeight = 0
 	
-	fontSize = 15
+	fontSize = 10
 	ctx.font = fontSize.toString() + "px " + "aerial"
 	ctx.fillStyle = "red"
 	tables = [
@@ -290,7 +292,7 @@ function renderHUD(){
 	]
 	]
 	
-	tableWidth = 80
+	tableWidth = 65
 	tableGap = 20
 	
 	for (t = 0; t < tables.length; t++){
@@ -315,7 +317,7 @@ function renderWorld(){											//draws the world from given cam perspective a
 	canvases = [ctx1, ctx2]
 	for (i = 0; i < 2; i++){
 		ctx = canvases[i]	
-		renderCrosshairs()
+		if (crosshairs) renderCrosshairs()
 		if (miniMap) renderMiniMap()
 		renderHUD()
 	}
