@@ -5,8 +5,8 @@ ctx2 = cnvs2.getContext("2d")
 
 var width, height
 
-cnvs1.width =  cnvs2.width = height = innerWidth
-cnvs1.height = cnvs2.height = width = innerHeight / 2
+cnvs1.width =  cnvs2.width = height = 900 //innerWidth
+cnvs1.height = cnvs2.height = width = 720 //innerHeight / 2
 
 ctx1.rotate(radFromDeg(-90))
 ctx1.translate(-width, 0)
@@ -17,13 +17,14 @@ ctx2.translate(-width, 0)
 
 document.addEventListener("keydown", keyPress)
 
-
+/*
 window.addEventListener("resize", function(e){
 	cnvs1.width =  cnvs2.width = height = innerWidth
 	cnvs1.height = cnvs2.height = width = innerHeight / 2
 	restart()
 	renderWorld()
 } )
+*/
 
 window.addEventListener("deviceorientation", orientationChange, true); 
 
@@ -78,8 +79,8 @@ console.log("using this, a cool thing to do is fly up (z) and then pan down (f) 
 mazeWidth = mazeHeight = 3;
 //map
 miniMap = true
-mapWidth = width / 5
-mapHeight = height / 5
+mapWidth = width / 3
+mapHeight = height / 4
 border = 0.6
 gap = 8
 arrowLength = 25
@@ -196,11 +197,8 @@ function renderMiniMap(){										//renders the minimap
 	
 	scale = 1.5 / mazeWidth
 	
-	mapWidth = width / 5
-	mapHeight = height / 5
-	
-	canvases = [ctx1, ctx2]
-	for (i = 0; i < 2; i++) ctx = canvases[i]
+	mapWidth = width / 3
+	mapHeight = height / 3
 	
 	ctx.fillStyle = "black"
 	ctx.fillRect(width - gap, gap, -mapWidth + border * -2, mapHeight + border * 2)
@@ -313,9 +311,14 @@ function renderWorld(){											//draws the world from given cam perspective a
 	
 	moduloCamViewpoint()
 	renderObjects()
-	renderCrosshairs()
-	//if (miniMap) renderMiniMap()
-	//renderHUD()
+	
+	canvases = [ctx1, ctx2]
+	for (i = 0; i < 2; i++){
+		ctx = canvases[i]	
+		renderCrosshairs()
+		if (miniMap) renderMiniMap()
+		renderHUD()
+	}
 
 	
 }
@@ -494,14 +497,10 @@ function padRight(string, length){									//pads a string to a 7 charachter str
 }
 
 function drawLine(xStart, yStart, xFin, yFin){	//draws a line on the canvas
-   ctx1.beginPath();
-   ctx1.moveTo(xStart, yStart);
-   ctx1.lineTo(xFin, yFin);
-   ctx1.stroke();
-   ctx2.beginPath();
-   ctx2.moveTo(xStart, yStart);
-   ctx2.lineTo(xFin, yFin);
-   ctx2.stroke();
+   ctx.beginPath();
+   ctx.moveTo(xStart, yStart);
+   ctx.lineTo(xFin, yFin);
+   ctx.stroke();
 }
 
 
