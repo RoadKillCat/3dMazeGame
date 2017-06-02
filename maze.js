@@ -11,6 +11,7 @@ document.addEventListener("keydown", keyPress)
 window.addEventListener("resize", function(e){
 	cnvs.width = width = innerWidth
 	cnvs.height = height = innerHeight
+	restart()
 	renderWorld()
 } )
 
