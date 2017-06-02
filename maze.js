@@ -11,7 +11,7 @@ document.addEventListener("keydown", keyPress)
 window.addEventListener("resize", function(e){
 	cnvs.width = width = innerWidth
 	cnvs.height = height = innerHeight
-	startUp()
+	renderWorld()
 } )
 
 function keyPress(event){
@@ -32,8 +32,8 @@ function keyPress(event){
 	if (key == 70) cam.pitch -= cam.lookStep   			//f	//look down
 	if (key == 89) cam.roll  += cam.lookStep			//y //roll left
 	if (key == 84) cam.roll  -= cam.lookStep			//t //roll right
-	if (key == 187) cam.fov += 5						//+ increase fov
-	if (key == 189) cam.fov -= 5						//- decrease fov
+	if (key == 187) {mazeWidth++;mazeHeight++;newMaze()}			//+ increase maze size
+	if (key == 189) {mazeWidth--;mazeHeight--;newMaze()}			//- decrease maze size
 	if (key == 71) wireframe = !wireframe   			//g toggle wireframe
 	if (key == 77) miniMap = !miniMap 					//m toggle minimap
 	if (key == 78) newMaze() 							//n new maze
@@ -43,7 +43,8 @@ function keyPress(event){
 }
 
 
-console.log("the cheat keys are 'z' and 'x' for all element inspecters ;)")
+console.log("use keys 'z' and 'x' to fly up and down for all element inspecters ;)")
+console.log("using this, a cool thing to do is fly up (z) and then pan down (f) then generate new mazes (n)...")
 
 //maze
 mazeWidth = mazeHeight = 3;
@@ -52,10 +53,9 @@ miniMap = true
 mapWidth = width / 5
 mapHeight = height / 5
 border = 0.6
-gap = 5
+gap = 8
 arrowLength = 25
 dot = 5
-scale = 0.47
 
 //rendering
 wireframe = false
@@ -78,7 +78,7 @@ function newMaze(){
 	
 function restart(){
 	
-	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 40, step: 4, lookStep: 10}		//camera
+	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 45, step: 4, lookStep: 10}		//camera
 	
 	newMaze()
 	
@@ -147,6 +147,8 @@ function renderMiniMap(){										//renders the minimap
 	
 	if (!miniMap) return
 	
+	scale = 1.5 / mazeWidth
+	
 	mapWidth = width / 5
 	mapHeight = height / 5
 	
@@ -158,7 +160,7 @@ function renderMiniMap(){										//renders the minimap
 	centerX = width - border - gap - mapWidth / 2
 	centerY = border + gap + mapHeight / 2
 	
-	adjustPointsY = mapHeight / 3
+	adjustPointsY = mapHeight / 4
 	adjustPointsX = mapWidth / -4
 	
 	var coordinates = unifiedCoords
@@ -231,10 +233,12 @@ function renderHUD(){
 	["r", "pitch up"],
 	["f", "pitch down"],
 	["g", "wireframe"],
-	["m", "mini map"], 
-	["+", "incr. fov"],
-	["-", "decr. fov"],
-	["c", "restart"]
+	["m", "mini map"],
+	["n", "new maze"],
+	["+", "incr. size"],
+	["-", "decr. size"],
+	["c", "restart"],
+	["(F12 for cheat)",""]
 	]
 	]
 	
