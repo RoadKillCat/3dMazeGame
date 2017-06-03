@@ -41,6 +41,9 @@ function orientationChange(event){
    renderWorld()
 }
 
+
+key = 0
+
 function keyPress(event){
 	key = event.keyCode
 
