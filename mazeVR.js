@@ -93,7 +93,7 @@ dot = 5
 crosshairs = true
 wireframe = false
 blockWidth = 40
-eyeDif = 5
+eyeDif = 3
 
 restart()
 //startUp()
@@ -321,7 +321,7 @@ function renderWorld(){											//draws the world from given cam perspective a
 	canvases = [ctx1, ctx2]
 	for (i = 0; i < 2; i++){
 		ctx = canvases[i]
-		xShift = eyeDif * (ctx == ctx1 ? -1 : 1)
+		xShift = 15 * (ctx == ctx1 ? -1 : 1)
 		if (crosshairs) renderCrosshairs()
 		if (miniMap) renderMiniMap()
 		renderHUD()
