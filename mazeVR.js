@@ -5,26 +5,24 @@ ctx2 = cnvs2.getContext("2d")
 
 var width, height
 
-cnvs1.width =  cnvs2.width = height = 900 //innerWidth
-cnvs1.height = cnvs2.height = width = 720 //innerHeight / 2
+function transformCanvases(){		
+	cnvs1.width =  cnvs2.width = height = innerWidth
+	cnvs1.height = cnvs2.height = width = innerHeight / 2
 
-ctx1.rotate(radFromDeg(-90))
-ctx1.translate(-width, 0)
+	ctx1.rotate(radFromDeg(-90))
+	ctx1.translate(-width, 0)
 
-ctx2.rotate(radFromDeg(-90))
-ctx2.translate(-width, 0)
+	ctx2.rotate(radFromDeg(-90))
+	ctx2.translate(-width, 0)
+}
+
+transformCanvases()
 
 
 document.addEventListener("keydown", keyPress)
 
-/*
-window.addEventListener("resize", function(e){
-	cnvs1.width =  cnvs2.width = height = innerWidth
-	cnvs1.height = cnvs2.height = width = innerHeight / 2
-	restart()
-	renderWorld()
-} )
-*/
+
+window.addEventListener("resize", 	function(){transformCanvases(); renderWorld();})
 
 window.addEventListener("deviceorientation", orientationChange, true); 
 
