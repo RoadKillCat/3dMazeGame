@@ -67,6 +67,7 @@ function keyPress(event){
 	if (key == 72) crosshairs = !crosshairs   			//g toggle crosshairs
 	if (key == 77) miniMap = !miniMap 					//m toggle minimap
 	if (key == 78) newMaze() 							//n new maze
+	if (key == 79) document.documentElement.webkitRequestFullScreen() 	//o full screen
 	renderWorld()
 	
 	
