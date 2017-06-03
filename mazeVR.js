@@ -257,8 +257,8 @@ function renderMiniMap(){										//renders the minimap
 function renderHUD(){
 	if (!miniMap) mapHeight = 0
 	
-	fontSize = 7
-	ctx.font = fontSize.toString() + "px courier"
+	fontSize = 9
+	ctx.font = fontSize.toString() + "px lucida console"
 	ctx.fillStyle = "red"
 	tables = [
 	//cam table
