@@ -83,7 +83,7 @@ mazeWidth = mazeHeight = 3;
 //map
 miniMap = true
 mapWidth = width / 4
-mapHeight = height / 4
+mapHeight = height / 4.6
 border = 0.6
 gap = 40
 arrowLength = 25
@@ -202,7 +202,7 @@ function renderMiniMap(){										//renders the minimap
 	scale = 1.3 / mazeWidth
 	
 	mapWidth = width / 4
-	mapHeight = height / 4
+	mapHeight = height / 4.6
 	
 	ctx.fillStyle = "black"
 	ctx.fillRect(width - gap + xShift, gap, -mapWidth + border * -2, mapHeight + border * 2)
@@ -257,8 +257,8 @@ function renderMiniMap(){										//renders the minimap
 function renderHUD(){
 	if (!miniMap) mapHeight = 0
 	
-	fontSize = 10
-	ctx.font = fontSize.toString() + "px " + "aerial"
+	fontSize = 7
+	ctx.font = fontSize.toString() + "px courier"
 	ctx.fillStyle = "red"
 	tables = [
 	//cam table
@@ -290,7 +290,8 @@ function renderHUD(){
 	["+", "incr. size"],
 	["-", "decr. size"],
 	["c", "restart"],
-	["(F12 for cheat)",""],
+	["F12","cheat"],
+	["",""],
 	["last key", String.fromCharCode(key)]
 	]
 	]
