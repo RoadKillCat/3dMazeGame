@@ -287,7 +287,8 @@ function renderHUD(){
 	["+", "incr. size"],
 	["-", "decr. size"],
 	["c", "restart"],
-	["(F12 for cheat)",""]
+	["(F12 for cheat)",""],
+	["last key", String.fromCharCode(key)]
 	]
 	]
 	
