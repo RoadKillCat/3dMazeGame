@@ -93,7 +93,7 @@ dot = 5
 crosshairs = true
 wireframe = false
 blockWidth = 40
-eyeDif = 2
+eyeDif = 5
 
 restart()
 //startUp()
@@ -205,11 +205,11 @@ function renderMiniMap(){										//renders the minimap
 	mapHeight = height / 4
 	
 	ctx.fillStyle = "black"
-	ctx.fillRect(width - gap, gap, -mapWidth + border * -2, mapHeight + border * 2)
+	ctx.fillRect(width - gap + xShift, gap, -mapWidth + border * -2, mapHeight + border * 2)
 	ctx.fillStyle = "white"
-	ctx.fillRect(width - border - gap, border + gap, -mapWidth, mapHeight)
+	ctx.fillRect(width - border - gap + xShift, border + gap, -mapWidth, mapHeight)
 	
-	centerX = width - border - gap - mapWidth / 2
+	centerX = width - border - gap - mapWidth / 2 + xShift
 	centerY = border + gap + mapHeight / 2
 	
 	adjustPointsY = mapHeight / 4
@@ -298,13 +298,14 @@ function renderHUD(){
 	tableWidth = 65
 	tableGap = 20
 	
+	
 	for (t = 0; t < tables.length; t++){
 		table = tables[t]
 		for (r = 0; r < table.length; r++){
 			ctx.textAlign = "left"
-			ctx.fillText(table[r][0], width - (mapWidth + 2 * border + gap) + t * (tableWidth + tableGap), (mapHeight + 2 * border + gap) + r * fontSize + fontSize)
+			ctx.fillText(table[r][0], width - (mapWidth + 2 * border + gap) + t * (tableWidth + tableGap) + xShift, (mapHeight + 2 * border + gap) + r * fontSize + fontSize)
 			ctx.textAlign = "right"
-			ctx.fillText(table[r][1], width - (mapWidth + 2 * border + gap) + (t+1) * tableWidth + t * tableGap, (mapHeight + 2 * border + gap) + r * fontSize + fontSize)
+			ctx.fillText(table[r][1], width - (mapWidth + 2 * border + gap) + (t+1) * tableWidth + t * tableGap + xShift, (mapHeight + 2 * border + gap) + r * fontSize + fontSize)
 		}
 	}
 }
@@ -319,7 +320,8 @@ function renderWorld(){											//draws the world from given cam perspective a
 	
 	canvases = [ctx1, ctx2]
 	for (i = 0; i < 2; i++){
-		ctx = canvases[i]	
+		ctx = canvases[i]
+		xShift = eyeDif * (ctx == ctx1 ? -1 : 1)
 		if (crosshairs) renderCrosshairs()
 		if (miniMap) renderMiniMap()
 		renderHUD()
