@@ -2,7 +2,7 @@ cnvs = document.getElementById("cnvs")
 ctx = cnvs.getContext("2d")
 
 width = height = 10
-speed = 75
+speed = 100
 
 function initiliseEmptyMaze(){
 	maze = []
@@ -54,9 +54,47 @@ function drawMaze(){
 	ctx.fillStyle = "red"
 	ctx.fillRect(xPos * blockWidth, yPos * blockHeight, blockWidth, blockHeight);
 }
+
+
+cellsInMaze = [[0,0]]
+frontierCells = [[1,0], [0,1]]
+
+function updateFF(){
+	if (!frontierCells.length) return
+	frontier = frontierCells[Math.floor(Math.random() * frontierCells.length)]
+	fx = frontier[0]
+	fy = frontier[1]
+	frontierAdjacents = [[fx+1,fy],[fx-1,fy],[fx,fy+1], [fx,fy-1]].filter(c => (a))
 	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+setInterval(update, speed)
+
+
+
+
+
+
+
+
+
 function update(){
 	if (!stack.length) return
+	if (x == 9 && y == 9) {solution = stack.slice(0); console.log(solution)}
 	ctx.clearRect(0,0,cnvs.width,cnvs.height)
 	drawMaze()
 	visited[y][x] = true
@@ -74,5 +112,3 @@ function update(){
 		stack.pop()
 	}
 }
-
-setInterval(update, speed)
