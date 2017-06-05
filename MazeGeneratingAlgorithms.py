@@ -1,22 +1,31 @@
-from random import choice, shuffle, randrange
+from random import choice, shuffle
 from time import sleep
+import codecs
 
-print("\n" * 3)
+#RECURSIVE BACKTRACKER ALGORITHM
 
-print("Recursive backtracker algorithm")
+f = codecs.open("recursive maze.txt","w","UTF-8")
+
+def writeMaze(maze):
+	for row in maze:
+		for c in row:
+			if c: f.write("██")
+			else: f.write("  ")
+		f.write("\n")
 
 def drawMaze(maze):
 	for row in maze:
 		for c in row:
-			if c: print(" ", end = "")
-			else: print("█", end = "")
+			if c: print("█", end="")
+			else: print(" ", end="")
 		print()
 
-width = height = 15
+width = height = 40
 maze = [None] * 2 * height
 maze[::2] =  [[True] * 2 * width + [True] for i in range(height)]
 maze[1::2] = [[True, False] * width + [True] for i in range(height)]
 maze += [[True] * 2 * width + [True]]
+maze[1][0] = maze[height * 2 - 1][width * 2] = False
 visited = [[False] * width for i in range(height)]
 
 x, y = 0, 0
@@ -35,48 +44,30 @@ while len(stack) > 0:
 	else:
 		x, y = stack[-1][0], stack[-1][1]
 		stack.pop()
-		
-drawMaze(maze)
-
-
-# The depth-first search algorithm of maze generation is frequently implemented using backtracking:
-
-# Make the initial cell the current cell and mark it as visited
-# While there are unvisited cells
-# If the current cell has any neighbours which have not been visited
-# Choose randomly one of the unvisited neighbours
-# Push the current cell to the stack
-# Remove the wall between the current cell and the chosen cell
-# Make the chosen cell the current cell and mark it as visited
-# Else if stack is not empty
-# Pop a cell from the stack
-# Make it the current cell
 
 print("\n" * 3)
+print("Recursive backtracker algorithm")
+		
+drawMaze(maze)
+writeMaze(maze)
+f.close()
 
-print("Prim's alogirthm")
+#PRIM's ALGORITHM
 
-def drawMaze(maze):
-	for row in maze:
-		for c in row:
-			if c: print(" ", end = "")
-			else: print("█", end = "")
-		print()
+f = codecs.open("prims maze.txt","w","UTF-8")
 
-width = height = 15
+
+width = height = 10
 maze = [None] * 2 * height
 maze[::2] =  [[True] * 2 * width + [True] for i in range(height)]
 maze[1::2] = [[True, False] * width + [True] for i in range(height)]
 maze += [[True] * 2 * width + [True]]
-
+maze[1][0] = maze[height * 2 - 1][width * 2] = False
 
 cellsInMaze = [(0,0)]
 frontierCells = [(1,0), (0,1)]
 
 while len(frontierCells):
-
-
-	
 	# fx = frontier cell's x, fy = frontier's y
 	fx,fy = choice(frontierCells)
 	
@@ -97,4 +88,10 @@ while len(frontierCells):
 			if n not in frontierCells and n not in cellsInMaze:
 				frontierCells.append(n)
 
+				
+print("\n" * 3)
+print("Prim's alogirthm")
+				
 drawMaze(maze)
+writeMaze(maze)
+f.close()

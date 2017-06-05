@@ -2,9 +2,10 @@ cnvs = document.getElementById("cnvs")
 ctx = cnvs.getContext("2d")
 
 width = height = 10
-speed = 100
+speed = 150
+algorithm = "recursive"
 
-function initiliseEmptyMaze(){
+function initilise(){
 	maze = []
 	visited = []
 	for (r = 0; r < height * 2; r ++){
@@ -23,17 +24,22 @@ function initiliseEmptyMaze(){
 	maze[0][1] = maze[width * 2][height * 2 - 1]= false
 	x = y = 0
 	stack = [[x,y]]
+	
+	
+	cellsInMaze = [[0,0]]
+	frontierCells = [[1,0], [0,1]]
 }
 
-initiliseEmptyMaze()
+initilise()
 
 
-function drawMaze(){
-	xPos = 2 * x + 1
-	yPos = 2 * y + 1
+function drawMaze(mx, my, points, join){
+	ctx.clearRect(0,0,cnvs.width,cnvs.height)	
+	ctx.fillStyle = "white"
+
 	blockWidth = cnvs.width / (width * 2 + 1)
 	blockHeight = cnvs.height / (height * 2 + 1)
-	ctx.fillStyle = "white"
+
 	for (r = 0; r < maze.length; r++){
 		for (c = 0; c < maze[r].length; c++){
 			ctx.fillStyle = "white"
@@ -41,74 +47,58 @@ function drawMaze(){
 		}
 	}
 	
-	
 	ctx.fillStyle = "blue"
-	for (i = 1; i < stack.length; i++){
-		ctx.fillRect((stack[i][0]*2 + 1) * blockWidth, (stack[i][1]*2 + 1) * blockHeight, blockWidth, blockHeight);
-		ctx.fillRect((stack[i][0] + stack[i-1][0] + 1) * blockWidth, (stack[i][1] + stack[i-1][1] + 1) * blockHeight, blockWidth, blockHeight);
+	for (i = join == true ? 1: 0; i < points.length; i++){
+		ctx.fillRect((points[i][0]*2 + 1) * blockWidth, (points[i][1]*2 + 1) * blockHeight, blockWidth, blockHeight);
+		if (join) ctx.fillRect((points[i][0] + points[i-1][0] + 1) * blockWidth, (points[i][1] + points[i-1][1] + 1) * blockHeight, blockWidth, blockHeight);
 	}
-	
-	ctx.fillRect((stack[stack.length - 1][0] + x + 1) * blockWidth, (stack[stack.length - 1][1] + y + 1) * blockHeight, blockWidth, blockHeight);
-	
-	
+	if (join) ctx.fillRect((points[points.length - 1][0] + x + 1) * blockWidth, (points[points.length - 1][1] + y + 1) * blockHeight, blockWidth, blockHeight);
+
 	ctx.fillStyle = "red"
-	ctx.fillRect(xPos * blockWidth, yPos * blockHeight, blockWidth, blockHeight);
+	ctx.fillRect((2 * mx + 1) * blockWidth, (2 * my + 1) * 	blockHeight, blockWidth, blockHeight);
 }
-
-
-cellsInMaze = [[0,0]]
-frontierCells = [[1,0], [0,1]]
-
-function updateFF(){
-	if (!frontierCells.length) return
-	frontier = frontierCells[Math.floor(Math.random() * frontierCells.length)]
-	fx = frontier[0]
-	fy = frontier[1]
-	frontierAdjacents = [[fx+1,fy],[fx-1,fy],[fx,fy+1], [fx,fy-1]].filter(c => (a))
-	
-	
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-setInterval(update, speed)
-
-
-
-
-
-
 
 
 
 function update(){
-	if (!stack.length) return
-	if (x == 9 && y == 9) {solution = stack.slice(0); console.log(solution)}
-	ctx.clearRect(0,0,cnvs.width,cnvs.height)
-	drawMaze()
-	visited[y][x] = true
-	neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
-	notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < width && c[1] < height && !visited[c[1]][c[0]] ))
-	if (notVisited.length) {
-		next = notVisited[Math.floor(Math.random() * notVisited.length)];
-		maze[(next[1] + y) + 1][(next[0] + x) +1] = false
-		stack.push([x,y])
-		x = next[0]
-		y = next[1]
-	} else {
-		x = stack[stack.length -1][0]
-		y = stack[stack.length -1][1]
-		stack.pop()
+	if (algorithm == "prims") {
+		if (!frontierCells.length) return
+		fc = frontierCells[Math.floor(Math.random() * frontierCells.length)]
+		//fc if a random frontier cell [x,y]
+		frontierAdjacents = [[fc[0]+1,fc[1]],[fc[0]-1,fc[1]],[fc[0],fc[1]+1], [fc[0],fc[1]-1]].filter(c => (cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1]))))	
+		af = frontierAdjacents[Math.floor(Math.random() * frontierAdjacents.length)]
+		maze[(fc[1] + af[1]) + 1][(fc[0] + af[0]) +1] = false
+		cellsInMaze.push([fc[0],fc[1]])
+		
+		frontierCells = []
+		for (i = 0; i < cellsInMaze.length; i++){
+			c = cellsInMaze[i]
+			neighbours = [[c[0]+1,c[1]], [c[0]-1,c[1]], [c[0],c[1]+1], [c[0],c[1]-1]].filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < width && c[1] < height))
+			validNeighbours = neighbours.filter(c => (!cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1])) && !frontierCells.some(o => (o[0] == c[0] && o[1] == c[1]))  ) ) 
+			frontierCells = frontierCells.concat(validNeighbours)
+			
+		}
+		
+		drawMaze(fc[0], fc[1], frontierCells, false)
+	} else {		//recursive algorithm
+		if (!stack.length) return
+		visited[y][x] = true
+		neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
+		notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < width && c[1] < height && !visited[c[1]][c[0]] ))
+		if (notVisited.length) {
+			next = notVisited[Math.floor(Math.random() * notVisited.length)];
+			maze[(next[1] + y) + 1][(next[0] + x) +1] = false
+			stack.push([x,y])
+			x = next[0]
+			y = next[1]
+		} else {
+			x = stack[stack.length -1][0]
+			y = stack[stack.length -1][1]
+			stack.pop()
+		}
+		drawMaze(x, y, stack, true)
 	}
+		
 }
+
+setInterval(update, speed)
