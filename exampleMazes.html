@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Example Mazes</title>
+		<style>
+		canvas{
+		background-color: black;
+		}</style>
+
+	
+	</head>
+	
+	<body>
+		<canvas id="recursiveCanvas" width="600" height="600"></canvas>
+		<canvas id="primsCanvas" width="600" height="600"></canvas>
+	<body/>	
+	<br>
+	<button onclick=" width--; height--; load()">Decrease Size</button>
+	<button onclick=" height++; width++; load()">Increase Size</button>
+	<script>
+recurCanvas = document.getElementById("recursiveCanvas")
+primsCanvas = document.getElementById("primsCanvas")
+recurCtx = recurCanvas.getContext("2d")
+primsCtx = primsCanvas.getContext("2d")
+
+width = height = 10
+
+function initilise(){
+	maze = []
+	visited = []
+	for (r = 0; r < height * 2; r ++){
+		r1 = [true]
+		r2 = [true]
+		v = []
+		for (c = 0; c < width * 2; c++){
+			r1.push(true,true)
+			r2.push(false,true)
+			v.push(false)
+		}
+		maze.push(r1,r2)
+		visited.push(v)
+	}
+	maze[0][1] = maze[width * 2][height * 2 - 1]= false
+	x = y = 0
+	stack = [[x,y]]
+	cellsInMaze = [[0,0]]
+	frontierCells = [[1,0], [0,1]]
+}
+
+function drawMaze(contex){
+	contex.clearRect(0,0,recurCanvas.width,recurCanvas.height)	
+	contex.fillStyle = "white"
+
+	blockWidth = recurCanvas.width / (width * 2 + 1)
+	blockHeight = recurCanvas.height / (height * 2 + 1)
+
+	for (r = 0; r < maze.length; r++){
+		for (c = 0; c < maze[r].length; c++){
+			contex.fillStyle = "white"
+			if (!maze[r][c]) contex.fillRect(c * blockWidth, r * blockHeight, blockWidth, blockHeight);
+		}
+	}
+}
+
+function load(){
+
+//BACKTRACKING ALGORITHM
+initilise()
+
+while (stack.length){
+	visited[y][x] = true
+	neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
+	notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < width && c[1] < height && !visited[c[1]][c[0]] ))
+	if (notVisited.length) {
+		next = notVisited[Math.floor(Math.random() * notVisited.length)];
+		maze[(next[1] + y) + 1][(next[0] + x) +1] = false
+		stack.push([x,y])
+		x = next[0]
+		y = next[1]
+	} else {
+		x = stack[stack.length -1][0]
+		y = stack[stack.length -1][1]
+		stack.pop()
+	}
+}
+
+drawMaze(recurCtx)
+
+//PRIMS ALGORITHM
+initilise()
+
+while (frontierCells.length){
+	fc = frontierCells[Math.floor(Math.random() * frontierCells.length)]
+	//fc if a random frontier cell [x,y]
+	frontierAdjacents = [[fc[0]+1,fc[1]],[fc[0]-1,fc[1]],[fc[0],fc[1]+1], [fc[0],fc[1]-1]].filter(c => (cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1]))))	
+	af = frontierAdjacents[Math.floor(Math.random() * frontierAdjacents.length)]
+	maze[(fc[1] + af[1]) + 1][(fc[0] + af[0]) +1] = false
+	cellsInMaze.push([fc[0],fc[1]])
+	
+	frontierCells = []
+	for (i = 0; i < cellsInMaze.length; i++){
+		c = cellsInMaze[i]
+		neighbours = [[c[0]+1,c[1]], [c[0]-1,c[1]], [c[0],c[1]+1], [c[0],c[1]-1]].filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < width && c[1] < height))
+		validNeighbours = neighbours.filter(c => (!cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1])) && !frontierCells.some(o => (o[0] == c[0] && o[1] == c[1]))  ) ) 
+		frontierCells = frontierCells.concat(validNeighbours)
+	}
+}
+
+drawMaze(primsCtx)	
+
+}
+
+load()
+
+	</script>
+</html>
