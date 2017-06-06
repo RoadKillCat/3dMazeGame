@@ -6,16 +6,21 @@ var width, height
 cnvs.width = width = innerWidth
 cnvs.height = height = innerHeight
 
+
 document.addEventListener("keydown", keyPress)
 
 window.addEventListener("resize", function(e){
+	
 	cnvs.width = width = innerWidth
 	cnvs.height = height = innerHeight
-	restart()
+	//restart()
 	renderWorld()
+	
 } )
 
 function keyPress(event){
+	
+	
 	key = event.keyCode
 
 	if (key == 67) restart()				//c for restart
@@ -38,6 +43,7 @@ function keyPress(event){
 	if (key == 71) wireframe = !wireframe   			//g toggle wireframe
 	if (key == 77) miniMap = !miniMap 					//m toggle minimap
 	if (key == 78) newMaze() 							//n new maze
+	if (key == 66) {mazeAlgorithm = mazeAlgorithm ==  "backtracker" ? "prims" : "backtracker";newMaze()} 	//b toggle maze algorithm
 	renderWorld()
 	
 	
@@ -48,11 +54,12 @@ console.log("use keys 'z' and 'x' to fly up and down for all element inspecters 
 console.log("using this, a cool thing to do is fly up (z) and then pan down (f) then generate new mazes (n)...")
 
 //maze
+mazeAlgorithm = "prims"
 mazeWidth = mazeHeight = 3;
 //map
 miniMap = true
 mapWidth = width / 5
-mapHeight = height / 5
+mapHeight = height / 4
 border = 0.6
 gap = 8
 arrowLength = 25
@@ -75,11 +82,10 @@ function newMaze(){
 		}
 	}
 }
-	
-	
+
 function restart(){
 	
-	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 45, step: 4, lookStep: 10}		//camera
+	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 45, step: 4, lookStep: 22.5}		//camera
 	
 	newMaze()
 	
@@ -151,7 +157,7 @@ function renderMiniMap(){										//renders the minimap
 	scale = 1.5 / mazeWidth
 	
 	mapWidth = width / 5
-	mapHeight = height / 5
+	mapHeight = height / 4
 	
 	ctx.fillStyle = "black"
 	ctx.fillRect(width - gap, gap, -mapWidth + border * -2, mapHeight + border * 2)
@@ -220,6 +226,11 @@ function renderHUD(){
 	["pitch", padLeft(cam.pitch)],
 	["roll", padLeft(cam.roll)],
 	["fov", padLeft(cam.fov)],
+	["",""],
+	["",""],
+	["",""],
+	["",""],
+	["",mazeAlgorithm]	
 	],
 	
 	//controls
@@ -233,9 +244,11 @@ function renderHUD(){
 	["e", "yaw right"],
 	["r", "pitch up"],
 	["f", "pitch down"],
+	["Toggles:",""],
 	["g", "wireframe"],
 	["m", "mini map"],
 	["n", "new maze"],
+	["b", "algorithm"],
 	["+", "incr. size"],
 	["-", "decr. size"],
 	["c", "restart"],
@@ -299,6 +312,8 @@ function startUp(){
 	"-: decrease fov",
 	"g: toggle wireframe",
 	"m: toggle mini map",
+	"n: new maze",
+	"b: toggle algorithm",
 	"c: begin"
 	]
 	ctx.textAlign = "left"
@@ -309,43 +324,79 @@ function startUp(){
 }
 
 function generateMaze(){
-
-	maze = []
-	var visited = []
-	for (r = 0; r < mazeHeight * 2; r ++){
-		r1 = [true]
-		r2 = [true]
-		v = []
-		for (c = 0; c < mazeWidth * 2; c++){
-			r1.push(true,true)
-			r2.push(false,true)
-			v.push(false)
+	
+	if (mazeAlgorithm == "backtracker"){
+		maze = []
+		var visited = []
+		for (r = 0; r < mazeHeight * 2; r ++){
+			r1 = [true]
+			r2 = [true]
+			v = []
+			for (c = 0; c < mazeWidth * 2; c++){
+				r1.push(true,true)
+				r2.push(false,true)
+				v.push(false)
+			}
+			maze.push(r1,r2)
+			visited.push(v)
 		}
-		maze.push(r1,r2)
-		visited.push(v)
-	}
 
-	maze[0][1] = maze[mazeWidth * 2][mazeHeight * 2 - 1]= false
+		maze[0][1] = maze[mazeWidth * 2][mazeHeight * 2 - 1]= false
 
-	var x, y
-	x = y = 0
+		var x, y
+		x = y = 0
 
-	var stack = [[x,y]]
+		var stack = [[x,y]]
 
-	while (stack.length){
-		visited[y][x] = true
-		neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
-		notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < mazeWidth && c[1] < mazeHeight && !visited[c[1]][c[0]] ))
-		if (notVisited.length) {
-			next = notVisited[Math.floor(Math.random() * notVisited.length)];
-			maze[(next[1] + y) + 1][(next[0] + x) +1] = false
-			stack.push([x,y])
-			x = next[0]
-			y = next[1]
-		} else {
-			x = stack[stack.length -1][0]
-			y = stack[stack.length -1][1]
-			stack.pop()
+		while (stack.length){
+			visited[y][x] = true
+			neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
+			notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < mazeWidth && c[1] < mazeHeight && !visited[c[1]][c[0]] ))
+			if (notVisited.length) {
+				next = notVisited[Math.floor(Math.random() * notVisited.length)];
+				maze[(next[1] + y) + 1][(next[0] + x) +1] = false
+				stack.push([x,y])
+				x = next[0]
+				y = next[1]
+			} else {
+				x = stack[stack.length -1][0]
+				y = stack[stack.length -1][1]
+				stack.pop()
+			}
+		}
+	} else { 	//prims
+		maze = []
+		for (r = 0; r < mazeHeight * 2; r ++){
+			r1 = [true]
+			r2 = [true]
+			for (c = 0; c < mazeWidth * 2; c++){
+				r1.push(true,true)
+				r2.push(false,true)
+			}
+			maze.push(r1,r2)
+		}
+		
+		maze[0][1] = maze[mazeWidth * 2][mazeHeight * 2 - 1] = false		
+
+		
+		cellsInMaze = [[0,0]]
+		frontierCells = [[1,0], [0,1]]
+		
+		while (frontierCells.length){
+			fc = frontierCells[Math.floor(Math.random() * frontierCells.length)]
+			//fc if a random frontier cell [x,y]
+			frontierAdjacents = [[fc[0]+1,fc[1]],[fc[0]-1,fc[1]],[fc[0],fc[1]+1], [fc[0],fc[1]-1]].filter(c => (cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1]))))	
+			af = frontierAdjacents[Math.floor(Math.random() * frontierAdjacents.length)]
+			maze[(fc[1] + af[1]) + 1][(fc[0] + af[0]) +1] = false
+			cellsInMaze.push([fc[0],fc[1]])
+			
+			frontierCells = []
+			for (i = 0; i < cellsInMaze.length; i++){
+				c = cellsInMaze[i]
+				neighbours = [[c[0]+1,c[1]], [c[0]-1,c[1]], [c[0],c[1]+1], [c[0],c[1]-1]].filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < mazeWidth && c[1] < mazeHeight))
+				validNeighbours = neighbours.filter(c => (!cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1])) && !frontierCells.some(o => (o[0] == c[0] && o[1] == c[1]))  ) ) 
+				frontierCells = frontierCells.concat(validNeighbours)
+			}
 		}
 	}
 }
