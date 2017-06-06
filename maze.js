@@ -85,7 +85,7 @@ function newMaze(){
 
 function restart(){
 	
-	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 45, step: 4, lookStep: 22.5}		//camera
+	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 90, step: 4, lookStep: 22.5}		//camera
 	
 	newMaze()
 	
