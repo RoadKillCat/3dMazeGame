@@ -45,6 +45,8 @@ function orientationChange(event){
 key = 0
 
 function keyPress(event){
+	navigator.vibrate(1000)
+	
 	key = event.keyCode
 
 	if (key == 67) restart()				//c for restart
