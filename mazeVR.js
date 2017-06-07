@@ -45,7 +45,7 @@ function orientationChange(event){
 key = 0
 
 function keyPress(event){
-	navigator.vibrate(1000)
+	navigator.vibrate(100)
 	
 	key = event.keyCode
 
