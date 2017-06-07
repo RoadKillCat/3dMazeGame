@@ -44,9 +44,7 @@ function orientationChange(event){
 
 key = 0
 
-function keyPress(event){
-	navigator.vibrate(100)
-	
+function keyPress(event){	
 	key = event.keyCode
 
 	if (key == 67) restart()				//c for restart
@@ -115,7 +113,7 @@ function newMaze(){
 	
 function restart(){
 	
-	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 90, step: 4, lookStep: 10}		//camera
+	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 65, step: 4, lookStep: 10}		//camera
 	
 	newMaze()
 	
