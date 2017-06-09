@@ -1,94 +1,82 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Example Mazes</title>
-		<style>
-		canvas{
-		background-color: black;
-		}</style>
 
+<html>
+
+<title>Meow :)</title>
+
+<style>
+header {
+	font-size: 60px;
+	font-family: monospace;
+	text-align: center;
+	width: 12em;
+	margin-left: auto;
+	margin-right: auto;
+}
+body {
+	margin: 0%;
+	padding: 0%;
+}
+canvas {
+	position: absolute;
+	z-index: -1;
+}
+
+div {
+	text-align: center;
+}	
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+	color: white;
+}
+</style>
+
+
+<body>
+	<canvas id="backgroundCanvas"></canvas>
+	<header>Welcome to the dead cat of the road</header>
+	<a href="http://google.com">
+		<canvas id="mazeCanvas"></canvas>
+	</a>
+	<table>
+		<tr>
+			<td>
+			</td>
+			<td>blah TR</td> 
+		</tr>
+		<tr>
+			<td>blan BL</td> 
+			<td>blah BR</td>
+		  </tr>
+	</table>
 	
-	</head>
+	<div>
+		<a href="http://roadkillcat.github.io/3dMazeGame/maze.html">play la maze jeu</a>
+	</div>
 	
-	<body>
-		<canvas id="recursiveCanvas" width="600" height="600"></canvas>
-		<canvas id="primsCanvas" width="600" height="600"></canvas>
-	<body/>	
-	<br>
-	<button onclick=" width--; height--; load()">Decrease Size</button>
-	<button onclick=" height++; width++; load()">Increase Size</button>
-	<script>
-recurCanvas = document.getElementById("recursiveCanvas")
-primsCanvas = document.getElementById("primsCanvas")
-recurCtx = recurCanvas.getContext("2d")
-primsCtx = primsCanvas.getContext("2d")
+</body>
+
+<script>
+//maze game
+cnvs = document.getElementById("mazeCanvas")
+ctx = cnvs.getContext("2d")
 
 width = height = 10
-
-function initilise(){
-	maze = []
-	visited = []
-	for (r = 0; r < height * 2; r ++){
-		r1 = [true]
-		r2 = [true]
-		v = []
-		for (c = 0; c < width * 2; c++){
-			r1.push(true,true)
-			r2.push(false,true)
-			v.push(false)
-		}
-		maze.push(r1,r2)
-		visited.push(v)
+maze = []
+visited = []
+for (r = 0; r < height * 2; r ++){
+	r1 = [true]
+	r2 = [true]
+	for (c = 0; c < width * 2; c++){
+		r1.push(true,true)
+		r2.push(false,true)
 	}
-	maze[0][1] = maze[width * 2][height * 2 - 1]= false
-	x = y = 0
-	stack = [[x,y]]
-	cellsInMaze = [[0,0]]
-	frontierCells = [[1,0], [0,1]]
+	maze.push(r1,r2)
 }
-
-function drawMaze(contex){
-	contex.clearRect(0,0,recurCanvas.width,recurCanvas.height)	
-	contex.fillStyle = "white"
-
-	blockWidth = recurCanvas.width / (width * 2 + 1)
-	blockHeight = recurCanvas.height / (height * 2 + 1)
-
-	for (r = 0; r < maze.length; r++){
-		for (c = 0; c < maze[r].length; c++){
-			contex.fillStyle = "white"
-			if (!maze[r][c]) contex.fillRect(c * blockWidth, r * blockHeight, blockWidth, blockHeight);
-		}
-	}
-}
-
-function load(){
-
-//BACKTRACKING ALGORITHM
-initilise()
-
-while (stack.length){
-	visited[y][x] = true
-	neighbours = [[x+1,y], [x-1,y], [x,y+1], [x,y-1]]
-	notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < width && c[1] < height && !visited[c[1]][c[0]] ))
-	if (notVisited.length) {
-		next = notVisited[Math.floor(Math.random() * notVisited.length)];
-		maze[(next[1] + y) + 1][(next[0] + x) +1] = false
-		stack.push([x,y])
-		x = next[0]
-		y = next[1]
-	} else {
-		x = stack[stack.length -1][0]
-		y = stack[stack.length -1][1]
-		stack.pop()
-	}
-}
-
-drawMaze(recurCtx)
-
-//PRIMS ALGORITHM
-initilise()
-
+maze[0][1] = maze[width * 2][height * 2 - 1]= false
+cellsInMaze = [[0,0]]
+frontierCells = [[1,0], [0,1]]
 while (frontierCells.length){
 	fc = frontierCells[Math.floor(Math.random() * frontierCells.length)]
 	//fc if a random frontier cell [x,y]
@@ -105,12 +93,50 @@ while (frontierCells.length){
 		frontierCells = frontierCells.concat(validNeighbours)
 	}
 }
-
-drawMaze(primsCtx)	
-
+ctx.clearRect(0,0,cnvs.width,cnvs.height)	
+ctx.fillStyle = "white"
+blockWidth = cnvs.width / (width * 2 + 1)
+blockHeight = cnvs.height / (height * 2 + 1)
+for (r = 0; r < maze.length; r++){
+	for (c = 0; c < maze[r].length; c++){
+		ctx.fillStyle = "white"
+		if (maze[r][c]) ctx.fillRect(c * blockWidth, r * blockHeight, blockWidth, blockHeight);
+	}
 }
 
-load()
 
-	</script>
+//bouncing ball background
+cnvs = document.getElementById("backgroundCanvas")
+ctx = cnvs.getContext("2d")
+window.addEventListener("resize", intialise)
+
+function intialise(){
+	cnvs.width = innerWidth; cnvs.height = innerHeight
+	ball = {x: cnvs.width / 2, y: cnvs.height / 2, vx: Math.random()*100-50, vy: Math.random()*100-50, r: cnvs.width / 10}
+	incr = Math.PI * 2 / 250
+	i = 0
+}
+
+intialise()
+
+function update(){
+	ball.x += ball.vx
+	ball.y += ball.vy
+	if (ball.x - ball.r < 0 || ball.x + ball.r > cnvs.width) ball.vx *= -1
+	if (ball.y - ball.r < 0 || ball.y + ball.r > cnvs.height) ball.vy *= -1	
+	r = parseInt(Math.sin(i) * 255/2 + 255/2)
+	g = parseInt(Math.sin(i + (2 * Math.PI) / 3) * 255/2 + 255/2)
+	b = parseInt(Math.sin(i + (4 * Math.PI) / 3) * 255/2 + 255/2)
+	i += incr
+	ctx.clearRect(0, 0, cnvs.width, cnvs.height)	
+	ctx.beginPath();
+	ctx.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
+	ctx.fillStyle = 'rgb(' + r.toString() + ',' + g.toString() + ',' + b.toString() + ')'
+	ctx.fill();	
+	cnvs.style.backgroundColor = 'rgb(' + (255-r).toString() + ',' + (255-g).toString() + ',' + (255-b).toString() + ')'
+}
+setInterval(update, 1000/30)
+</script>
+
+
 </html>
