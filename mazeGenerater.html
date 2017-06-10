@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Maze Generater</title>
-		<style>
-		canvas{
+<head>
+	<title>Maze Generater</title>
+	<style>
+	canvas{
 		background-color: black;
 		float: left;
 		margin-right: 10px;		
-		}</style>
+	}
+	
+	body{
+		font-size: 11px;
+		font-family: monospace;
+	}
+	
+	button{
+		font-size: 11px;
+		font-family: monospace;
+	}
+	
+	</style>
 
-	
-	</head>
-	
-	<body>
-		<canvas id="cnvs" width="600" height="600"></canvas>
-	<body/>	
-	<script src = "mazeGenerater.js"></script>
-	<br>
-	<button onclick=" width--; height--; initilise()">Decrease Size</button>
-	<button onclick=" height++; width++; initilise()">Increase Size</button>
-	<br>
-	<button onclick="initilise(); algorithm = 'prims'">Prims Algorithm</button>
-	<button onclick="initilise(); algorithm = 'recursive'">Recursive Algorithm</button>
-	
-	<pre style="font-size: 11px; font-family: lucida console">
+
+</head>
+
+<body>
+
+<canvas id="cnvs" width="600" height="600"></canvas>
+<script src = "mazeGenerater.js"></script>
+<a href = "https://roadkillcat.github.io/3dMazeGame/exampleMazes.html">see the mazes generated side-by-side</a>
+<br>
+<br>
+<button onclick=" width--; height--; initilise()">Decrease Size</button>
+<button onclick=" height++; width++; initilise()">Increase Size</button>
+<br>
+<button onclick="initilise(); algorithm = 'prims'">Prims Algorithm</button>
+<button onclick="initilise(); algorithm = 'recursive'">Recursive Algorithm</button>
+
+<pre>
 The Algorithms (<a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm">from here</a> and <a href="http://www.astrolog.org/labyrnth/algrithm.htm">here</a>)
 
 Recursive Backtracker:
@@ -33,7 +47,7 @@ While there are unvisited cells
 	If the current cell has any neighbours which have not been visited
 		Choose randomly one of the unvisited neighbours
 		Push the current cell to the stack
-		Remove the wall between the current cell and the chosen cell
+		Remove the wall between the current cell and the chosen cell	
 		Make the chosen cell the current cell and mark it as visited
 	Else if stack is not empty
 		Pop a cell from the stack
@@ -60,5 +74,6 @@ While there are frontier cells
 
 <a href="https://raw.githubusercontent.com/RoadKillCat/3dMazeGame/master/primsMazeGenerater.py">python source code</a>
 
-	</pre>
+</pre>
+</body>
 </html>
