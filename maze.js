@@ -10,13 +10,19 @@ cnvs.height = height = innerHeight
 document.addEventListener("keydown", keyPress)
 
 window.addEventListener("resize", function(e){
-	
 	cnvs.width = width = innerWidth
 	cnvs.height = height = innerHeight
-	//restart()
 	renderWorld()
-	
 } )
+
+window.addEventListener("mousemove", function(e){
+	mouse = {x: e.offsetX - width/2, y: e.offsetY - height/2}
+	if (playing) {
+		cam.yaw = mouse.x * width / 4000
+		cam.pitch = mouse.y * width / -2000
+		renderWorld()
+	}
+}, false)
 
 function keyPress(event){
 	
@@ -69,6 +75,8 @@ dot = 5
 wireframe = false
 blockWidth = 40
 
+//other
+playing = false
 
 startUp()
 
@@ -84,9 +92,8 @@ function newMaze(){
 }
 
 function restart(){
-	
+	playing = true
 	cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 90, step: 4, lookStep: 22.5}		//camera
-	
 	newMaze()
 	
 	renderWorld()
