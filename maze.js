@@ -14,7 +14,7 @@ window.addEventListener("resize", function(e){
 	cnvs.height = height = innerHeight
 	renderWorld()
 } )
-
+/*
 window.addEventListener("mousemove", function(e){
 	mouse = {x: e.offsetX - width/2, y: e.offsetY - height/2}
 	if (playing) {
@@ -23,7 +23,7 @@ window.addEventListener("mousemove", function(e){
 		renderWorld()
 	}
 }, false)
-
+*/
 function keyPress(event){
 	
 	
