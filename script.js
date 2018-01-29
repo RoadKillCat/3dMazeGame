@@ -36,7 +36,7 @@ function keyPress(event){
     if (key == 77) miniMap = !miniMap                   //m toggle minimap
     if (key == 78) newMaze()                            //n new maze
     if (key == 86) toggleNight()                        //v toggle night mode
-    if (key == 71) {wireframe = !wireframe;if(wireframe)toggleNight()}                          //g toggle wireframe
+    if (key == 71) {wireframe = !wireframe;if(!night)toggleNight()}                          //g toggle wireframe
     if (key == 66) {mazeAlgorithm=mazeAlgorithm=="backtracker"?"prims":"backtracker";newMaze()} //b toggle maze algorithm
     renderWorld()
 }
