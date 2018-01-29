@@ -111,8 +111,7 @@ function renderHUD(){
     ctx.fillStyle = "red"
     var tables = [
     //cam table
-    [
-    ["Camera:", ""],
+    [["Camera:", ""],
     ["x", padLeft(cam.x)],
     ["y", padLeft(cam.y)],
     ["z", padLeft(cam.z)],
@@ -120,16 +119,11 @@ function renderHUD(){
     ["pitch", padLeft(cam.pitch)],
     ["roll", padLeft(cam.roll)],
     ["fov", padLeft(cam.fov)],
-    ["",""],
-    ["",""],
-    ["",""],
-    ["",""],
-    ["",mazeAlgorithm]  
-    ],
+    ["",""],["",""],["",""],["",""],["",""],["",""],["",""],
+    ["",mazeAlgorithm]],
     
     //controls
-    [
-    ["Controls:", ""],
+    [["Controls:", ""],
     ["w", "forward"],
     ["a", "left"],
     ["s", "backwards"],
@@ -149,11 +143,8 @@ function renderHUD(){
     ["+", "incr. size"],
     ["-", "decr. size"],
     ["c", "restart"],
-    ["(F12 for cheat)",""]
+    ["(F12 for cheat)",""]]
     ]
-    ]
-    
-
     for (t = 0; t < tables.length; t++){
         table = tables[t]
         for (r = 0; r < table.length; r++){
@@ -167,7 +158,6 @@ function renderHUD(){
 
 
 function startScreen(){
-    
     ctx.textBaseline = "middle"
     ctx.fillStyle = blockCol
     ctx.font = "150px cambria"
