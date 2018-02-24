@@ -278,12 +278,8 @@ function moduloCamViewpoint(){
     while (cam.roll > 180) cam.roll -= 360
 }
 
-function padLeft(num){                                          //returns string of number padded from left to make a 5 charachter string
-    return ("\xa0\xa0\xa0\xa0" + parseFloat(num.toFixed(1))).slice(-5)
-}
-
-function padRight(string, length){                                  //pads a string to a 7 charachter string
-    return (string + "\xa0\xa0\xa0\xa0\xa0\xa0").slice(0,5)
+function padLeft(num){                                          //returns string of number padded from left to make a 6 character string
+    return ("\xa0\xa0\xa0\xa0\xa0" + parseFloat(num.toFixed(1))).slice(-6)
 }
 
 function drawLine(xStart, yStart, xFin, yFin){                  //draws a line on the canvas
