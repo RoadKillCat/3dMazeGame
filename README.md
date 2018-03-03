@@ -1,9 +1,8 @@
-# This is the code for a maze game that you navigate in 3d
+A 3D Maze Game
+==============
 
-Click [this link](https://roadkillcat.github.io/3dMazeGame/) to *try* and **escape the maze**.
+After researching a couple of different *maze generation* algorithms and writing them in Python, I thought it would be cool to incorporate them in to some JavaScript projects.
 
-Or if you have a VR headset, [here](https://roadkillcat.github.io/3dMazeGame/mazeVR.html).
+I made a [little demo page](http://joeiddon.me/3dMazeGame/maze_generation_demo) which explains and shows two of my favourite algorithms. On that page (or you can access them directly above) are links to my original Python code that just generates the mazes and prints them to the console. If you are more versed in Python, than JS, you may like to take a look at them. I have also written [a post](http://joeiddon.me/projects/javascript/mazeGeneration) on my site that goes into much more depth.
 
-Click [here](https://roadkillcat.github.io/3dMazeGame/mazeGenerater.html) to see a demo of my maze generation algorithms.
-
-Or [here](https://roadkillcat.github.io/3dMazeGame/exampleMazes.html) to see the different algorithms generated side-by-side.
+However, the main focus of this project was the **3D** aspect. The aim and controls are explained on the first screen, so if you'd like to take a look, then [**visit here**](http://joeiddon.me/3dMazeGame/").

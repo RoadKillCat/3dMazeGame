@@ -6,7 +6,6 @@ var width, height
 cnvs.width = width = innerWidth
 cnvs.height = height = innerHeight
 
-
 document.addEventListener("keydown", keyPress)
 
 window.addEventListener("resize", function(e){
@@ -16,7 +15,8 @@ window.addEventListener("resize", function(e){
 } )
 
 function keyPress(event){
-    key = event.keyCode
+    if (!started) restart();
+    var key = event.keyCode
 
     if (key == 67) restart()                            //c restart
     if (key == 88) cam.z -= cam.step                    //x fly down
@@ -25,47 +25,56 @@ function keyPress(event){
     if (key == 83) takeStep(cam.yaw + 180)              //s walk backwards
     if (key == 65) takeStep(cam.yaw - 90)               //a walk left
     if (key == 68) takeStep(cam.yaw + 90)               //d walk right  
-    if (key == 69) cam.yaw   += cam.lookStep            //e //look left
-    if (key == 81) cam.yaw   -= cam.lookStep            //q //look right
-    if (key == 82) cam.pitch += cam.lookStep            //r //look up
-    if (key == 70) cam.pitch -= cam.lookStep            //f //look down
-    if (key == 89) cam.roll  += cam.lookStep            //y //roll left
-    if (key == 84) cam.roll  -= cam.lookStep            //t //roll right
+    if (key == 69) cam.yaw   += cam.lookStep            //e look left
+    if (key == 81) cam.yaw   -= cam.lookStep            //q look right
+    if (key == 82) cam.pitch += cam.lookStep            //r look up
+    if (key == 70) cam.pitch -= cam.lookStep            //f look down
+    if (key == 89) cam.roll  += cam.lookStep            //y roll left
+    if (key == 84) cam.roll  -= cam.lookStep            //t roll right
     if (key == 187) {mazeWidth++;mazeHeight++;newMaze()}//+ increase maze size
     if (key == 189) {mazeWidth--;mazeHeight--;newMaze()}//- decrease maze size
     if (key == 77) miniMap = !miniMap                   //m toggle minimap
     if (key == 78) newMaze()                            //n new maze
     if (key == 86) toggleNight()                        //v toggle night mode
-    if (key == 71) {wireframe = !wireframe;if(!night)toggleNight()}                          //g toggle wireframe
+    if (key == 71) {wireframe = !wireframe;if(!night)toggleNight()}                             //g toggle wireframe
     if (key == 66) {mazeAlgorithm=mazeAlgorithm=="backtracker"?"prims":"backtracker";newMaze()} //b toggle maze algorithm
     renderWorld()
 }
 
-
+/*** CHEAT ***/
 console.log("use keys 'z' and 'x' to fly up and down for all element inspecters ;)")
 console.log("using this, a cool thing to do is fly up (z) and then pan down (f) then generate new mazes (n)...")
 
+/*** VARIABLES ***/
+//general
+var started = false;
+var world;
+
+//camera
+var cam;
+
 //maze
-mazeAlgorithm = "prims"
-mazeWidth = mazeHeight = 3;
+var mazeAlgorithm = "prims"
+var mazeWidth = mazeHeight = 3;
 
 //rendering
-wireframe = false
-blockSz = 40
-blockHght = 20
-blockCol = "#c6b9cc"
-night = false
+var wireframe = false
+var blockSz = 40
+var blockHght = 20
+var blockCol = "#c6b9cc"
+var night = false
 
 //heads up display
-tableWidth = 80
-tableGap = 20
-tablePad = 10
+var tableWidth = 80
+var tableGap = 20
+var tablePad = 10
 
+/**** BEGIN ***/
 startScreen()
 
 function renderWorld(){
     moduloCamViewpoint()
-    render(world, cam, cnvs, wireframe)
+    zengine.render(world, cam, cnvs, wireframe)
     renderCrosshairs()
     renderHUD() 
 }
@@ -100,7 +109,8 @@ function newMaze(){
 }
 
 function restart(){
-    cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 90, step: 4, lookStep: 22.5}      //camera
+    started = true;
+    cam = {x: 60, y: -100, z: 10, pitch: 0, yaw: 0, roll: 0, fov: 90, step: 4, lookStep: 22.5}
     newMaze()
     renderWorld()
 }
