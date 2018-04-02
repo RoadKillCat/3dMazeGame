@@ -278,8 +278,14 @@ function generateMaze(){
 //SHORT SPECIFIC FUNCTIONS
 
 function takeStep(yaw){
-    cam.x = cam.step * Math.sin(yaw*(Math.PI/180)) + cam.x
-    cam.y = cam.step * Math.cos(yaw*(Math.PI/180)) + cam.y
+    next = {x: cam.step * Math.sin(yaw*(Math.PI/180)) + cam.x,
+            y: cam.step * Math.cos(yaw*(Math.PI/180)) + cam.y}
+    blk = {x: Math.floor(next.x / blockSz),
+           y: Math.floor(next.y / blockSz)}
+    if (blk.x < 0 || blk.y < 0 || blk.x > mazeWidth * 2 + 1 || blk.y > mazeHeight * 2 + 1 || !maze[blk.y][blk.x]){
+        cam.x = next.x
+        cam.y = next.y
+    }
 }
 
 function moduloCamViewpoint(){
