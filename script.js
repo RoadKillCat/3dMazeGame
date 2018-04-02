@@ -207,20 +207,21 @@ function startScreen(){
 function generateMaze(){
     if (mazeAlgorithm == "backtracker"){
         maze = []
-        var visited = []
-        for (r = 0; r < mazeHeight * 2; r ++){
-            r1 = [true]
-            r2 = [true]
-            v = []
-            for (c = 0; c < mazeWidth * 2; c++){
-                r1.push(true,true)
-                r2.push(false,true)
-                v.push(false)
-            }
-            maze.push(r1,r2)
-            visited.push(v)
+        visited = []
+        r1 = [true]
+        r2 = [true]
+        vr = [false]
+        for (c = 0; c < mazeWidth; c++){
+            r1.push(true,true)
+            r2.push(false,true)
+            vr.push(false)
         }
-        maze[0][1] = maze[mazeWidth * 2][mazeHeight * 2 - 1]= false
+        for (r = 0; r < mazeHeight; r ++){
+            maze.push(r1.slice(0), r2.slice(0))
+            visited.push(vr.slice(0))
+        }
+        maze.push(r1.slice(0))
+        maze[0][1] = maze[mazeHeight * 2][mazeWidth * 2 - 1] = false        
         var x, y
         x = y = 0
         var stack = [[x,y]]
@@ -230,7 +231,7 @@ function generateMaze(){
             notVisited = neighbours.filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < mazeWidth && c[1] < mazeHeight && !visited[c[1]][c[0]] ))
             if (notVisited.length) {
                 next = notVisited[Math.floor(Math.random() * notVisited.length)];
-                maze[(next[1] + y) + 1][(next[0] + x) +1] = false
+                maze[next[1] + y + 1][next[0] + x +1] = false
                 stack.push([x,y])
                 x = next[0]
                 y = next[1]
@@ -242,30 +243,32 @@ function generateMaze(){
         }
     } else {    //prims
         maze = []
-        for (r = 0; r < mazeHeight * 2; r ++){
-            r1 = [true]
-            r2 = [true]
-            for (c = 0; c < mazeWidth * 2; c++){
-                r1.push(true,true)
-                r2.push(false,true)
-            }
-            maze.push(r1,r2)
+        r1 = [true]
+        r2 = [true]
+        for (c = 0; c < mazeWidth; c++){
+            r1.push(true,true)
+            r2.push(false,true)
         }
-        maze[0][1] = maze[mazeWidth * 2][mazeHeight * 2 - 1] = false        
+        for (r = 0; r < mazeHeight; r ++){
+            maze.push(r1.slice(0), r2.slice(0))
+        }
+        maze.push(r1.slice(0))
+        maze[0][1] = maze[mazeHeight * 2][mazeWidth * 2 - 1] = false        
         cellsInMaze = [[0,0]]
         frontierCells = [[1,0], [0,1]]
         while (frontierCells.length){
             fc = frontierCells[Math.floor(Math.random() * frontierCells.length)]
             //fc is a random frontier cell [x,y]
-            frontierAdjacents = [[fc[0]+1,fc[1]],[fc[0]-1,fc[1]],[fc[0],fc[1]+1], [fc[0],fc[1]-1]].filter(c => (cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1])))) 
+            frontierAdjacents = [[fc[0]+1,fc[1]], [fc[0]-1,fc[1]], [fc[0],fc[1]+1], [fc[0],fc[1]-1]]
+                                 .filter(c => (cellsInMaze.some(cc => (cc[0] == c[0] && cc[1] == c[1]))))
             af = frontierAdjacents[Math.floor(Math.random() * frontierAdjacents.length)]
-            maze[(fc[1] + af[1]) + 1][(fc[0] + af[0]) +1] = false
-            cellsInMaze.push([fc[0],fc[1]])
+            maze[fc[1] + af[1] + 1][fc[0] + af[0] +1] = false
+            cellsInMaze.push(fc)
             frontierCells = []
             for (i = 0; i < cellsInMaze.length; i++){
                 c = cellsInMaze[i]
-                neighbours = [[c[0]+1,c[1]], [c[0]-1,c[1]], [c[0],c[1]+1], [c[0],c[1]-1]].filter(c => (c[0] >= 0 && c[1] >= 0 && c[0] < mazeWidth && c[1] < mazeHeight))
-                validNeighbours = neighbours.filter(c => (!cellsInMaze.some(o => (o[0] == c[0] && o[1] == c[1])) && !frontierCells.some(o => (o[0] == c[0] && o[1] == c[1]))  ) ) 
+                neighbours = [[c[0]+1,c[1]], [c[0]-1,c[1]], [c[0],c[1]+1], [c[0],c[1]-1]].filter(cc => (cc[0] >= 0 && cc[1] >= 0 && cc[0] < mazeWidth && cc[1] < mazeHeight))
+                validNeighbours = neighbours.filter(c => (!cellsInMaze.some(cc => (cc[0] == c[0] && cc[1] == c[1])) && !frontierCells.some(cc => (cc[0] == c[0] && cc[1] == c[1]))  ) ) 
                 frontierCells = frontierCells.concat(validNeighbours)
             }
         }
